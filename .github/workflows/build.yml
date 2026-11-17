@@ -1,0 +1,30 @@
+name: Build Firmware
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build ESP-IDF v5.5.3 esp32c3
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.5.3
+          target: esp32c3
+          command: idf.py build
+      - name: Merge binary
+        run: |
+          . $IDF_PATH/export.sh
+          esptool.py --chip esp32c3 merge_bin -o build/passport-xiaozhi-full.bin @build/flash_args
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: passport-xiaozhi-firmware
+          path: build/passport-xiaozhi-full.bin
+          if-no-files-found: error

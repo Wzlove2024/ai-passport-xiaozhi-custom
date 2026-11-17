@@ -17,15 +17,7 @@ jobs:
         with:
           esp_idf_version: v5.5.3
           target: esp32c3
-          command: >-
-            pip install Pillow &&
-            idf.py build &&
-            cd build &&
-            sed -i 's/--flash_size detect/--flash_size 8MB/g' flash_args &&
-            esptool.py --chip esp32c3 merge_bin
-            --flash_mode dio --flash_size 8MB --flash_freq 80m
-            -o passport-xiaozhi-full.bin
-            @flash_args
+          command: pip install Pillow && idf.py build && esptool.py --chip esp32c3 merge_bin --flash_mode dio --flash_size 8MB --flash_freq 80m -o build/passport-xiaozhi-full.bin 0x0 build/bootloader/bootloader.bin 0x8000 build/partition_table/partition-table.bin 0x10000 build/trae_card.bin 0x3fa000 build/imgava.bin 0x500000 build/petart.bin 0x600000 build/companion/companion.bin
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

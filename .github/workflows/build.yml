@@ -12,18 +12,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Install Python dependencies
-        run: pip install Pillow
-      - name: Build ESP-IDF v5.5.3 esp32c3
+      - name: Build and merge firmware
         uses: espressif/esp-idf-ci-action@v1
         with:
           esp_idf_version: v5.5.3
           target: esp32c3
-          command: pip install Pillow && idf.py build
-      - name: Merge binary
-        run: |
-          . $IDF_PATH/export.sh
-          esptool.py --chip esp32c3 merge_bin -o build/passport-xiaozhi-full.bin @build/flash_args
+          command: >-
+            pip install Pillow &&
+            idf.py build &&
+            esptool.py --chip esp32c3 merge_bin
+            -o build/passport-xiaozhi-full.bin
+            @build/flash_args
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

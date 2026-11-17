@@ -21,6 +21,7 @@ jobs:
             pip install Pillow &&
             idf.py build &&
             esptool.py --chip esp32c3 merge_bin
+            --flash_mode dio --flash_size 8MB --flash_freq 80m
             -o build/passport-xiaozhi-full.bin
             @build/flash_args
       - name: Upload artifact
